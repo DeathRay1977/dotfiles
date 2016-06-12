@@ -188,25 +188,19 @@ noremap <leader>qa :wqa!<cr>
 noremap <leader>dp :call DebugPrint()<CR>
 noremap <leader>nh :noh<CR>
 nnoremap <Leader>nn :NERDTreeTabsToggle<CR>
-" Rspec  mappings
-map <Leader>t :call RunCurrentSpecFile()<CR>
-map <Leader>s :call RunNearestSpec()<CR>
-map <Leader>l :call RunLastSpec()<CR>
-map <Leader>a :call RunAllSpecs()<CR>
-let g:rspec_command = "!rspec --drb {spec}"
-let g:rspec_runner = "os_x_iterm2"
+
 " Hard mode
 nnoremap <leader>h <Esc>:call ToggleHardMode()<CR>
 " Fuzzy finder mappings
 map <leader>b :FufBuffer<cr>
 map <leader>f :FufFile<cr>
-map <leader>T :FufTag<cr>
-map <leader>B :FufBufferTag<cr>
+map <leader>t :FufTag<cr>
 map <leader>d :FufDir<cr>
 map <leader>j :FufJumpList<cr>
 map <leader>c :FufChangeList<cr>
 map <leader>q :FufQuickfix<cr>
-map <leader>L :FufLine<cr>
+map <leader>l :FufLine<cr>
+          
 " Normal Mode mappings
 noremap <leader>> :bn<CR>
 nnoremap <silent> <leader>ts :call StripTrailingWhitespaces()<CR>
@@ -222,8 +216,6 @@ nnoremap <leader>R :RainbowParenthesesToggle<CR>
 nnoremap <silent> <Plug>TransposeCharacters xp :call repeat#set("\<Plug>TransposeCharacters")<CR>
 nmap cp <Plug>TransposeCharacters
 
-" Shortcut to rapidly toggle `set list`
-nnoremap <leader>l :set list!<CR>
 nnoremap <leader>af :Autoformat<cr>
 " Since these all have native (Cmd-modified) versions in MacVim, don't bother
 " defining them there.
