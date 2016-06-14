@@ -71,6 +71,7 @@ set sw=2
 set expandtab
 set nowrap
 set autoread
+set mouse=a
 au CursorHold * checktime
 set cc=80
 set gfn=Menlo\ Regular\ for\ Powerline:h13
@@ -270,6 +271,7 @@ if has("autocmd")
   autocmd FileType ruby nmap <buffer> <F6> <Plug>(xmpfilter-run)
   autocmd FileType ruby xmap <buffer> <F6> <Plug>(xmpfilter-run)
   autocmd FileType ruby imap <buffer> <F6> <Plug>(xmpfilter-run)
+  autocmd FileType brs setlocal commentstring='\ %s
   autocmd! bufwritepost .vimrc source $MYVIMRC
 
   autocmd VimResized * :wincmd =
