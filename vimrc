@@ -14,10 +14,8 @@ Plug 'airblade/vim-gitgutter'
 Plug 'bling/vim-airline'
 Plug 'chooh/brightscript.vim'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'easymotion/vim-easymotion'
-Plug 'elzr/vim-json'
-Plug 'flazz/vim-colorschemes'
+Plug 'DataWraith/auto_mkdir'
+Plug 'elixir-lang/vim-elixir'
 Plug 'gioele/vim-autoswap'
 Plug 'godlygeek/tabular'
 Plug 'haya14busa/incsearch-easymotion.vim'
@@ -28,28 +26,21 @@ Plug 'luochen1990/rainbow'
 Plug 'mattn/gist-vim'
 Plug 'mattn/webapi-vim'
 Plug 'morhetz/gruvbox'
-Plug 'pangloss/vim-javascript'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
-Plug 't9md/vim-ruby-xmpfilter'
+Plug 'sjl/gundo.vim'
 Plug 'terryma/vim-multiple-cursors'
-Plug 'thoughtbot/vim-rspec'
 Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-cucumber'
-Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-rails'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'valloric/YouCompleteMe'
-Plug 'vim-ruby/vim-ruby'
 Plug 'vim-scripts/fuzzyfinder'
 Plug 'vim-scripts/l9'
-Plug 'vim-scripts/taglist.vim'
 Plug 'wikitopian/hardmode'
 call plug#end()
 set encoding=utf8
@@ -62,28 +53,22 @@ set history=50 " keep 50 lines of command line history
 set ruler      " show the cursor position all the time
 set showcmd    " display incomplete commands
 set incsearch  " do incremental searching
+set nohlsearch
 set hidden
 set laststatus=2
-set ts=2
-set sts=2
-set sw=2
+set ts=4
+set sts=4
+set sw=4
 set expandtab
+set mouse=a
 set nowrap
 set autoread
-set mouse=a
+set fileformat=unix
 au CursorHold * checktime
-set cc=80
-set gfn=Menlo\ Regular\ for\ Powerline:h13
+" set gfn=Menlo\ Regular\ for\ Powerline:h13
+set guifont=Meslo\ LG\ L\ DZ\ for\ Powerline:h13
 set timeoutlen=1000 ttimeoutlen=0
-" Gif config
-map  / <Plug>(easymotion-sn)
-omap / <Plug>(easymotion-tn)
 
-" These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
-" Without these mappings, `n` & `N` works fine. (These mappings just provide
-" different highlight method and have some other features )
-map  n <Plug>(easymotion-next)
-map  N <Plug>(easymotion-prev)
 
 " Syntastic
 set statusline+=%#warningmsg#
@@ -124,6 +109,28 @@ let g:UltiSnipsSnippetsDir="~/.vim/bundle/vim-snippets/UltiSnips"
 nnoremap <C-s> :w<CR>
 inoremap <c-s> <esc>:w<CR>
 vmap <C-s> <esc>:w<CR>gv
+" You can use other keymappings like <C-l> instead of <CR> if you want to
+" use these mappings as default search and somtimes want to move cursor with
+" EasyMotion.
+function! s:incsearch_config(...) abort
+  return incsearch#util#deepextend(deepcopy({
+  \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
+  \   'keymap': {
+  \     "\<CR>": '<Over>(easymotion)'
+  \   },
+  \   'is_expr': 0
+  \ }), get(a:, 1, {}))
+endfunction
+
+noremap <silent><expr> /  incsearch#go(<SID>incsearch_config())
+noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
+noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
+
+" These `n` & `N` mappings are options. You do not have to map `n` & `N` to EasyMotion.
+" Without these mappings, `n` & `N` works fine. (These mappings just provide
+" different highlight method and have some other features )
+map  n <Plug>(easymotion-next)
+map  N <Plug>(easymotion-prev)
 
 function! g:Fixfont()
   set guifont=Courier\ 10\ Pitch\ 10
@@ -177,7 +184,7 @@ let g:autoformat_verbosemode = 1
 let g:formatprg_args_expr_cpp = '"--unpad-paren --style=whitesmith --pad-paren-in --indent-brackets"'
 let g:rainbow_conf = {
       \   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
-      \   'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+      \   'ctermfgs': [ 'lightblue', 'lightyellow', 'lightcyan', 'lightmagenta', 'lightred'],
       \   'operators': '_,_',
       \   'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
       \   'separately': {
@@ -188,6 +195,9 @@ let g:rainbow_conf = {
       \       },
       \       'lisp': {
       \           'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+      \       },
+      \       'brs': {
+      \           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
       \       },
       \       'vim': {
       \           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
@@ -206,31 +216,27 @@ let mapleader=","
 " Mappings
 noremap <leader>gp :Git push origin master<cr>
 noremap <leader>qa :wqa!<cr>
-
+noremap <leader>dp :call DebugPrint()<CR>
+noremap <leader>nh :noh<CR>
 nnoremap <Leader>nn :NERDTreeTabsToggle<CR>
-" Rspec  mappings
-map <Leader>t :call RunCurrentSpecFile()<CR>
-map <Leader>s :call RunNearestSpec()<CR>
-map <Leader>l :call RunLastSpec()<CR>
-map <Leader>a :call RunAllSpecs()<CR>
-let g:rspec_command = "!rspec --drb {spec}"
-let g:rspec_runner = "os_x_iterm2"
+
 " Hard mode
 nnoremap <leader>h <Esc>:call ToggleHardMode()<CR>
 " Fuzzy finder mappings
 map <leader>b :FufBuffer<cr>
 map <leader>f :FufFile<cr>
-map <leader>T :FufTag<cr>
-map <leader>B :FufBufferTag<cr>
+map <leader>t :FufTag<cr>
 map <leader>d :FufDir<cr>
 map <leader>j :FufJumpList<cr>
 map <leader>c :FufChangeList<cr>
 map <leader>q :FufQuickfix<cr>
-map <leader>L :FufLine<cr>
+map <leader>l :FufLine<cr>
+          
 " Normal Mode mappings
 noremap <leader>> :bn<CR>
 nnoremap <silent> <leader>ts :call StripTrailingWhitespaces()<CR>
 noremap <F4> :set hlsearch! hlsearch?<CR>
+nnoremap <F5> :GundoToggle<CR>
 " Disable Arrow Keys"
 nnoremap <up> <nop>
 nnoremap <down> <nop>
@@ -241,8 +247,6 @@ nnoremap <leader>R :RainbowParenthesesToggle<CR>
 nnoremap <silent> <Plug>TransposeCharacters xp :call repeat#set("\<Plug>TransposeCharacters")<CR>
 nmap cp <Plug>TransposeCharacters
 
-" Shortcut to rapidly toggle `set list`
-nnoremap <leader>l :set list!<CR>
 nnoremap <leader>af :Autoformat<cr>
 " Since these all have native (Cmd-modified) versions in MacVim, don't bother
 " defining them there.
@@ -250,17 +254,150 @@ function! Carousel()
   for theme in split(globpath(&runtimepath, 'colors/*.vim'), '\n')
     let t = fnamemodify(theme, ':t:r')
     try
-      execute 'colorscheme '.t
       echo t
+      execute 'colorscheme '.t
     catch
     finally
     endtry
-    sleep 2
+    sleep 4
     redraw
   endfor
 endfunction
 
 map <silent> <Leader>tc :call Carousel()<cr>
+" A utility function to help cover our bases when mapping.
+"
+" Example of use:
+"   call NvicoMapMeta('n', ':new<CR>', 1)
+" is equivalent to:
+"   exec "set <M-n>=\<Esc>n"
+"   nnoremap <special> <Esc>n :new<CR>
+"   vnoremap <special> <Esc>n <Esc><Esc>ngv
+"   inoremap <special> <Esc>n <C-o><Esc>n
+"   cnoremap <special> <Esc>n <C-c><Esc>n
+"   onoremap <special> <Esc>n <Esc><Esc>n
+function! NvicoMapMeta(key, cmd, add_gv)
+  " TODO: Make this detect whether key is something that has a Meta
+  " equivalent.
+  let l:keycode = "<M-" . a:key . ">"
+
+  let l:set_line = "set " . l:keycode . "=\<Esc>" . a:key
+
+  let l:nmap_line = 'nmap <silent> <special> ' . l:keycode . ' ' . a:cmd
+  let l:vnoremap_line = 'vnoremap <silent> <special> ' . l:keycode . ' <Esc>' . l:keycode
+  if(a:add_gv)
+    let l:vnoremap_line.='gv'
+  endif
+  let l:inoremap_line = 'inoremap <silent> <special> ' . l:keycode . ' <C-o>' . l:keycode
+  let l:cnoremap_line = 'cnoremap <special> ' . l:keycode . ' <C-c>' . l:keycode
+  let l:onoremap_line = 'onoremap <silent> <special> ' . l:keycode . ' <Esc>' . l:keycode
+
+  exec l:set_line
+  exec l:nmap_line
+  exec l:vnoremap_line
+  exec l:inoremap_line
+  exec l:cnoremap_line
+  exec l:onoremap_line
+endfunction
+
+" I can't think of a good function to assign to Meta+n, since in MacVim Cmd+N
+" opens a whole new editing session.
+
+" Meta+Shift+N
+" No equivalent to this in standard MacVim. Here " it just opens a window on a
+" new buffer.
+call NvicoMapMeta('N', ':new<CR>', 1)
+
+" Meta+o
+" Open netrw file browser
+call NvicoMapMeta('o', ':split %:p:h<CR>', 1)
+
+" Meta+w
+" Close window
+call NvicoMapMeta('w', ':confirm close<CR>', 1)
+
+" Meta+s
+" Save buffer
+call NvicoMapMeta('s', ':confirm w<CR>', 1)
+
+" Meta+Shift+S
+" Save as
+" TODO: This is silent, so you can't tell it's waiting for input. If anyone can
+" fix this, please do!
+call NvicoMapMeta('S', ':confirm saveas ', 1)
+
+" Meta+z
+" Undo
+call NvicoMapMeta('z', 'u', 1)
+
+" Meta+Shift+Z
+" Redo
+call NvicoMapMeta('Z', '<C-r>', 1)
+
+" Meta+x
+" Cut to system clipboard (requires register +")
+exec "set <M-x>=\<Esc>x"
+vnoremap <special> <M-x> "+x
+
+" Meta+c
+" Copy to system clipboard (requires register +")
+exec "set <M-c>=\<Esc>c"
+vnoremap <special> <M-c> "+y
+
+" Meta+v
+" Paste from system clipboard (requires register +")
+exec "set <M-v>=\<Esc>v"
+nnoremap <silent> <special> <M-v> "+gP
+cnoremap <special> <M-v> <C-r>+
+execute 'vnoremap <silent> <script> <special> <M-v>' paste#paste_cmd['v']
+execute 'inoremap <silent> <script> <special> <M-v>' paste#paste_cmd['i']
+
+" Meta+a
+" Select all
+call NvicoMapMeta('a', ':if &slm != ""<Bar>exe ":norm gggH<C-o>G"<Bar> else<Bar>exe ":norm ggVG"<Bar>endif<CR>', 0)
+
+" Meta+f
+" Find regexp. NOTE: MacVim's Cmd+f does a non-regexp search.
+call NvicoMapMeta('f', '/', 0)
+
+" Meta+g
+" Find again
+call NvicoMapMeta('g', 'n', 0)
+
+" Meta+Shift+G
+" Find again, reverse direction
+call NvicoMapMeta('G', 'N', 0)
+
+" Meta+q
+" Quit Vim
+" Not quite identical to MacVim default (which is actually coded in the app
+" itself rather than in macmap.vim)
+call NvicoMapMeta('q', ':confirm qa<CR>', 0)
+
+" Meta+Shift+{
+" Switch tab left
+call NvicoMapMeta('{', ':tabN<CR>', 0)
+
+" Meta+Shift+}
+" Switch tab right
+call NvicoMapMeta('}', ':tabn<CR>', 0)
+
+" Meta+t
+" Create new tab
+call NvicoMapMeta('t', ':tabnew<CR>', 0)
+
+" Meta+Shift+T
+" Open netrw file browser in new tab
+call NvicoMapMeta('T', ':tab split %:p:h<CR>', 0)
+
+" Meta+b
+" Call :make
+call NvicoMapMeta('b', ':make<CR>', 1)
+
+" Meta+l
+" Open error list
+call NvicoMapMeta('l', ':cl<CR>', 1)
+
 " TODO: We need to configure iTerm2 to be able to send Cmd+Ctrl+arrow keys, so
 " we can duplicate the :cnext/:cprevious/:colder/:cnewer bindings to those keys
 " in MacVim.
@@ -290,7 +427,9 @@ if has("autocmd")
   au BufRead,BufNewFile *.rex set filetype=ruby
   filetype plugin indent on
   runtime macros/matchit.vim
-  autocmd BufWritePre *.rb,*.erb,*.bs,*.brs :call StripTrailingWhitespaces()
+  autocmd Syntax * syn match ExtraWhitespace /\s\+$\| \+\ze\t/
+  autocmd BufWritePre *.brs,*.bs,*.rb,*.erb,*.js :call StripTrailingWhitespaces()
+  autocmd BufWritePre *.brs,*.bs :retab
   autocmd FileType ruby nmap <buffer> <F5> <Plug>(xmpfilter-mark)
   autocmd FileType ruby xmap <buffer> <F5> <Plug>(xmpfilter-mark)
   autocmd FileType ruby imap <buffer> <F5> <Plug>(xmpfilter-mark)
@@ -300,7 +439,7 @@ if has("autocmd")
   autocmd FileType ruby imap <buffer> <F6> <Plug>(xmpfilter-run)
   autocmd FileType brs setlocal commentstring='\ %s
   autocmd! bufwritepost .vimrc source $MYVIMRC
-
+  au BufRead,BufNewFile *.bs setfiletype brs
   autocmd VimResized * :wincmd =
   " When editing a file, always jump to the last known cursor position.
   " Don't do it when the position is invalid or when inside an event handler
@@ -319,6 +458,6 @@ endif " has("autocmd")
 
 highlight Pmenu guibg=brown gui=bold
 
-function! Debugprint()
-  normal yt oprint "pa: "; p
+function! DebugPrint()
+    normal yt oprint "pa: ";p
 endfunction
