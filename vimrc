@@ -14,7 +14,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'bling/vim-airline'
 Plug 'chooh/brightscript.vim'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'DataWraith/auto_mkdir'
+Plug 'easymotion/vim-easymotion'
 Plug 'elixir-lang/vim-elixir'
 Plug 'gioele/vim-autoswap'
 Plug 'godlygeek/tabular'
@@ -231,7 +231,7 @@ map <leader>j :FufJumpList<cr>
 map <leader>c :FufChangeList<cr>
 map <leader>q :FufQuickfix<cr>
 map <leader>l :FufLine<cr>
-          
+
 " Normal Mode mappings
 noremap <leader>> :bn<CR>
 nnoremap <silent> <leader>ts :call StripTrailingWhitespaces()<CR>

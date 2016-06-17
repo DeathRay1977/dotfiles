@@ -1,5 +1,5 @@
 # Path to your oh-my-zsh installation.
-export ZSH=/Users/NFA02/.oh-my-zsh
+export ZSH=~/.oh-my-zsh
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
@@ -53,13 +53,13 @@ plugins=(git rvm tmux rails brew)
 # User configuration
 KEYTIMEOUT=1
 
-export PATH=$PATH:"/Users/NFA02/.rvm/gems/ruby-2.2.2@sixdegrees/bin:/Users/NFA02/.rvm/gems/ruby-2.2.2@global/bin:/Users/NFA02/.rvm/rubies/ruby-2.2.2/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/MacGPG2/bin:/usr/local/bin:/bin:/usr/sbin:/sbin:/usr/bin:/opt/X11/bin:/usr/local/MacGPG2/bin:/Users/NFA02/.rvm/bin:/Applications/Racket v6.2/bin:/Users/NFA02/.rvm/bin"
-export RUBYMOTION_ANDROID_SDK=/Users/NFA02/.rubymotion-android/sdk
-export RUBYMOTION_ANDROID_NDK=/Users/NFA02/.rubymotion-android/ndk
+export PATH=$PATH:"~/.rvm/gems/ruby-2.2.2@sixdegrees/bin:~/.rvm/gems/ruby-2.2.2@global/bin:~/.rvm/rubies/ruby-2.2.2/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/MacGPG2/bin:/usr/local/bin:/bin:/usr/sbin:/sbin:/usr/bin:/opt/X11/bin:/usr/local/MacGPG2/bin:~/.rvm/bin:/Applications/Racket v6.2/bin:~/.rvm/bin"
+export RUBYMOTION_ANDROID_SDK=~/.rubymotion-android/sdk
+export RUBYMOTION_ANDROID_NDK=~/.rubymotion-android/ndk
 # export MANPATH="/usr/local/man:$MANPATH"
 stty -ixon
 source $ZSH/oh-my-zsh.sh
-source ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh  
+source ~/.oh-my-zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh  
 . `brew --prefix`/etc/profile.d/z.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -85,7 +85,7 @@ export ARCHFLAGS="-arch x86_64"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-export NVM_DIR="/Users/NFA02/.nvm"
+export NVM_DIR="~/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
