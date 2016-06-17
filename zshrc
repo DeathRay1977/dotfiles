@@ -59,7 +59,7 @@ export RUBYMOTION_ANDROID_NDK=/Users/NFA02/.rubymotion-android/ndk
 # export MANPATH="/usr/local/man:$MANPATH"
 stty -ixon
 source $ZSH/oh-my-zsh.sh
-source ~/.oh-my-zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh  
+source ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh  
 . `brew --prefix`/etc/profile.d/z.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8

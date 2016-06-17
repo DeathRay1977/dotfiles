@@ -3,31 +3,36 @@
 set nocompatible
 
 call plug#begin('~/.vim/plugged')
-Plug 'easymotion/vim-easymotion'
-Plug 'ctrlpvim/ctrlp.vim'
+
 Plug 'Chiel92/vim-autoformat'
+Plug 'Chun-Yang/vim-action-ag'
+Plug 'DataWraith/auto_mkdir'
+Plug 'MattesGroeger/vim-bookmarks'
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'airblade/vim-gitgutter'
 Plug 'bling/vim-airline'
+Plug 'chooh/brightscript.vim'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'DataWraith/auto_mkdir'
-Plug 'elixir-lang/vim-elixir'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'easymotion/vim-easymotion'
+Plug 'elzr/vim-json'
+Plug 'flazz/vim-colorschemes'
 Plug 'gioele/vim-autoswap'
+Plug 'godlygeek/tabular'
+Plug 'haya14busa/incsearch-easymotion.vim'
+Plug 'haya14busa/incsearch.vim'
 Plug 'jelera/vim-javascript-syntax'
 Plug 'jistr/vim-nerdtree-tabs'
-Plug 'jpalardy/vim-slime'
 Plug 'luochen1990/rainbow'
 Plug 'mattn/gist-vim'
 Plug 'mattn/webapi-vim'
 Plug 'morhetz/gruvbox'
-Plug 'mustache/vim-mustache-handlebars'
 Plug 'pangloss/vim-javascript'
-Plug 'rizzatti/dash.vim'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
 Plug 't9md/vim-ruby-xmpfilter'
-Plug 'flazz/vim-colorschemes'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'thoughtbot/vim-rspec'
 Plug 'tommcdo/vim-exchange'
@@ -46,12 +51,6 @@ Plug 'vim-scripts/fuzzyfinder'
 Plug 'vim-scripts/l9'
 Plug 'vim-scripts/taglist.vim'
 Plug 'wikitopian/hardmode'
-Plug 'chooh/brightscript.vim'
-Plug 'Chun-Yang/vim-action-ag'
-Plug 'godlygeek/tabular'
-Plug 'roman/golden-ratio'
-Plug 'MattesGroeger/vim-bookmarks'
-
 call plug#end()
 set encoding=utf8
 set rnu
@@ -143,6 +142,34 @@ function! StripTrailingWhitespaces()
   let @/=_s
   call cursor(l, c)
 endfunction
+" You can use other keymappings like <C-l> instead of <CR> if you want to
+" use these mappings as default search and somtimes want to move cursor with
+" EasyMotion.
+function! s:incsearch_config(...) abort
+  return incsearch#util#deepextend(deepcopy({
+  \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
+  \   'keymap': {
+  \     "\<CR>": '<Over>(easymotion)'
+  \   },
+  \   'is_expr': 0
+  \ }), get(a:, 1, {}))
+endfunction
+
+noremap <silent><expr> /  incsearch#go(<SID>incsearch_config())
+noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
+noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
+
+set hlsearch
+let g:incsearch#auto_nohlsearch = 1
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+map *  <Plug>(incsearch-nohl-*)
+map #  <Plug>(incsearch-nohl-#)
+map g* <Plug>(incsearch-nohl-g*)
+map g# <Plug>(incsearch-nohl-g#)
+
+
+
 let g:slime_target = "tmux"
 let g:ruby_debugger_progname = 'mvim'
 let g:formatprg_cpp = "astyle"
@@ -263,7 +290,7 @@ if has("autocmd")
   au BufRead,BufNewFile *.rex set filetype=ruby
   filetype plugin indent on
   runtime macros/matchit.vim
-  autocmd BufWritePre *.rb,*.erb :call StripTrailingWhitespaces()
+  autocmd BufWritePre *.rb,*.erb,*.bs,*.brs :call StripTrailingWhitespaces()
   autocmd FileType ruby nmap <buffer> <F5> <Plug>(xmpfilter-mark)
   autocmd FileType ruby xmap <buffer> <F5> <Plug>(xmpfilter-mark)
   autocmd FileType ruby imap <buffer> <F5> <Plug>(xmpfilter-mark)
