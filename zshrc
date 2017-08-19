@@ -109,3 +109,4 @@ export MANIFEST_HMAC_SECRET=Pv9HkaVzyGKAAM46q2K7JKN7bkW6aX7EYWpY6QB9UMvfuu
 export MANIFEST_CONFIG_URI=http://$NOWTV_CONFIG_SERVER_IP:4567/NowTV-NowTV-Roku/$NOWTV_CONFIG_VERSION/${country}-NowTV-NowTV-Roku-${env_name}/config.json
 
 source ~/.bin/tmuxinator.zsh
+export PATH="/usr/local/sbin:$PATH"
