@@ -11,9 +11,10 @@ Plug 'MattesGroeger/vim-bookmarks'
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'airblade/vim-gitgutter'
-Plug 'bling/vim-airline'
 Plug 'chooh/brightscript.vim'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'dermusikman/sonicpi.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'elixir-lang/vim-elixir'
 Plug 'gioele/vim-autoswap'
@@ -21,9 +22,6 @@ Plug 'godlygeek/tabular'
 Plug 'haya14busa/incsearch-easymotion.vim'
 Plug 'haya14busa/incsearch.vim'
 Plug 'jelera/vim-javascript-syntax'
-Plug 'jistr/vim-nerdtree-tabs'
-Plug 'luochen1990/rainbow'
-Plug 'mattn/gist-vim'
 Plug 'mattn/webapi-vim'
 Plug 'morhetz/gruvbox'
 Plug 'rking/ag.vim'
@@ -39,9 +37,9 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'valloric/YouCompleteMe'
-Plug 'vim-scripts/fuzzyfinder'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-scripts/l9'
-Plug 'wikitopian/hardmode'
 call plug#end()
 set encoding=utf8
 set rnu
@@ -64,9 +62,10 @@ set mouse=a
 set nowrap
 set autoread
 set fileformat=unix
+set list
 au CursorHold * checktime
 " set gfn=Menlo\ Regular\ for\ Powerline:h13
-set guifont=Meslo\ LG\ L\ DZ\ for\ Powerline:h13
+set guifont=Meslo\ LG\ S\ for\ Powerline:h14
 set timeoutlen=1000 ttimeoutlen=0
 
 
@@ -74,6 +73,12 @@ set timeoutlen=1000 ttimeoutlen=0
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
+
+set directory=~/.vim/swapfiles//
+set backupdir=~/.vim/backup//
+set undodir=~/.vim/undo//
+
+let g:python_host_prog = '/usr/local/bin/python2'
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_enable_signs = 0
@@ -87,6 +92,14 @@ let g:syntastic_ruby_checkers = ['rubocop']
 :let ruby_operators = 1
 :let ruby_space_errors = 1
 :let ruby_spellcheck_strings = 1
+
+let g:airline#extensions#tabline#enabled = 0
+let g:airline_theme='molokai'
+
+let g:ctrlp_cmd = 'CtrlPBuffer'
+let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'dir', 'rtscript',
+                          \ 'undo', 'line', 'changes', 'mixed', 'bookmarkdir']
+let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
 
 " Nerdtree
 
@@ -178,6 +191,8 @@ map g# <Plug>(incsearch-nohl-g#)
 
 
 let g:slime_target = "tmux"
+let g:slime_paste_file = "$HOME/.slime_paste"
+
 let g:ruby_debugger_progname = 'mvim'
 let g:formatprg_cpp = "astyle"
 let g:autoformat_verbosemode = 1
@@ -218,23 +233,25 @@ noremap <leader>gp :Git push origin master<cr>
 noremap <leader>qa :wqa!<cr>
 noremap <leader>dp :call DebugPrint()<CR>
 noremap <leader>nh :noh<CR>
-nnoremap <Leader>nn :NERDTreeTabsToggle<CR>
+nnoremap <Leader>nn :NERDTreeToggle<CR>
 
 " Hard mode
 nnoremap <leader>h <Esc>:call ToggleHardMode()<CR>
 " Fuzzy finder mappings
-map <leader>b :FufBuffer<cr>
-map <leader>f :FufFile<cr>
-map <leader>t :FufTag<cr>
-map <leader>d :FufDir<cr>
-map <leader>j :FufJumpList<cr>
-map <leader>c :FufChangeList<cr>
-map <leader>q :FufQuickfix<cr>
-map <leader>l :FufLine<cr>
+map <leader>b :CtrlPBuffer<cr>
+map <leader>bt :CtrlPBufTag<cr>
+map <leader>f :CtrlP<cr>
+map <leader>t :CtrlPTag<cr>
+map <leader>d :CtrlPDir<cr>
+map <leader>c :CtrlPChange<cr>
+map <leader>q :CtrlPQuickfix<cr>
+map <leader>l :CtrlPLine<cr>
+map <leader>m :CtrlPMRU<cr>
 
 " Normal Mode mappings
 noremap <leader>> :bn<CR>
 nnoremap <silent> <leader>ts :call StripTrailingWhitespaces()<CR>
+
 noremap <F4> :set hlsearch! hlsearch?<CR>
 nnoremap <F5> :GundoToggle<CR>
 " Disable Arrow Keys"
@@ -265,145 +282,6 @@ function! Carousel()
 endfunction
 
 map <silent> <Leader>tc :call Carousel()<cr>
-" A utility function to help cover our bases when mapping.
-"
-" Example of use:
-"   call NvicoMapMeta('n', ':new<CR>', 1)
-" is equivalent to:
-"   exec "set <M-n>=\<Esc>n"
-"   nnoremap <special> <Esc>n :new<CR>
-"   vnoremap <special> <Esc>n <Esc><Esc>ngv
-"   inoremap <special> <Esc>n <C-o><Esc>n
-"   cnoremap <special> <Esc>n <C-c><Esc>n
-"   onoremap <special> <Esc>n <Esc><Esc>n
-function! NvicoMapMeta(key, cmd, add_gv)
-  " TODO: Make this detect whether key is something that has a Meta
-  " equivalent.
-  let l:keycode = "<M-" . a:key . ">"
-
-  let l:set_line = "set " . l:keycode . "=\<Esc>" . a:key
-
-  let l:nmap_line = 'nmap <silent> <special> ' . l:keycode . ' ' . a:cmd
-  let l:vnoremap_line = 'vnoremap <silent> <special> ' . l:keycode . ' <Esc>' . l:keycode
-  if(a:add_gv)
-    let l:vnoremap_line.='gv'
-  endif
-  let l:inoremap_line = 'inoremap <silent> <special> ' . l:keycode . ' <C-o>' . l:keycode
-  let l:cnoremap_line = 'cnoremap <special> ' . l:keycode . ' <C-c>' . l:keycode
-  let l:onoremap_line = 'onoremap <silent> <special> ' . l:keycode . ' <Esc>' . l:keycode
-
-  exec l:set_line
-  exec l:nmap_line
-  exec l:vnoremap_line
-  exec l:inoremap_line
-  exec l:cnoremap_line
-  exec l:onoremap_line
-endfunction
-
-" I can't think of a good function to assign to Meta+n, since in MacVim Cmd+N
-" opens a whole new editing session.
-
-" Meta+Shift+N
-" No equivalent to this in standard MacVim. Here " it just opens a window on a
-" new buffer.
-call NvicoMapMeta('N', ':new<CR>', 1)
-
-" Meta+o
-" Open netrw file browser
-call NvicoMapMeta('o', ':split %:p:h<CR>', 1)
-
-" Meta+w
-" Close window
-call NvicoMapMeta('w', ':confirm close<CR>', 1)
-
-" Meta+s
-" Save buffer
-call NvicoMapMeta('s', ':confirm w<CR>', 1)
-
-" Meta+Shift+S
-" Save as
-" TODO: This is silent, so you can't tell it's waiting for input. If anyone can
-" fix this, please do!
-call NvicoMapMeta('S', ':confirm saveas ', 1)
-
-" Meta+z
-" Undo
-call NvicoMapMeta('z', 'u', 1)
-
-" Meta+Shift+Z
-" Redo
-call NvicoMapMeta('Z', '<C-r>', 1)
-
-" Meta+x
-" Cut to system clipboard (requires register +")
-exec "set <M-x>=\<Esc>x"
-vnoremap <special> <M-x> "+x
-
-" Meta+c
-" Copy to system clipboard (requires register +")
-exec "set <M-c>=\<Esc>c"
-vnoremap <special> <M-c> "+y
-
-" Meta+v
-" Paste from system clipboard (requires register +")
-exec "set <M-v>=\<Esc>v"
-nnoremap <silent> <special> <M-v> "+gP
-cnoremap <special> <M-v> <C-r>+
-execute 'vnoremap <silent> <script> <special> <M-v>' paste#paste_cmd['v']
-execute 'inoremap <silent> <script> <special> <M-v>' paste#paste_cmd['i']
-
-" Meta+a
-" Select all
-call NvicoMapMeta('a', ':if &slm != ""<Bar>exe ":norm gggH<C-o>G"<Bar> else<Bar>exe ":norm ggVG"<Bar>endif<CR>', 0)
-
-" Meta+f
-" Find regexp. NOTE: MacVim's Cmd+f does a non-regexp search.
-call NvicoMapMeta('f', '/', 0)
-
-" Meta+g
-" Find again
-call NvicoMapMeta('g', 'n', 0)
-
-" Meta+Shift+G
-" Find again, reverse direction
-call NvicoMapMeta('G', 'N', 0)
-
-" Meta+q
-" Quit Vim
-" Not quite identical to MacVim default (which is actually coded in the app
-" itself rather than in macmap.vim)
-call NvicoMapMeta('q', ':confirm qa<CR>', 0)
-
-" Meta+Shift+{
-" Switch tab left
-call NvicoMapMeta('{', ':tabN<CR>', 0)
-
-" Meta+Shift+}
-" Switch tab right
-call NvicoMapMeta('}', ':tabn<CR>', 0)
-
-" Meta+t
-" Create new tab
-call NvicoMapMeta('t', ':tabnew<CR>', 0)
-
-" Meta+Shift+T
-" Open netrw file browser in new tab
-call NvicoMapMeta('T', ':tab split %:p:h<CR>', 0)
-
-" Meta+b
-" Call :make
-call NvicoMapMeta('b', ':make<CR>', 1)
-
-" Meta+l
-" Open error list
-call NvicoMapMeta('l', ':cl<CR>', 1)
-
-" TODO: We need to configure iTerm2 to be able to send Cmd+Ctrl+arrow keys, so
-" we can duplicate the :cnext/:cprevious/:colder/:cnewer bindings to those keys
-" in MacVim.
-nnoremap <leader>- :wincmd _<cr>:wincmd \|<cr>
-nnoremap <leader>= :wincmd =<cr>
-
 " colours
 
 " Switch syntax highlighting on, when the terminal has colors
