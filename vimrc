@@ -14,16 +14,27 @@ Plug 'airblade/vim-gitgutter'
 Plug 'chooh/brightscript.vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'derekwyatt/vim-scala'
 Plug 'dermusikman/sonicpi.vim'
 Plug 'easymotion/vim-easymotion'
+Plug 'ensime/ensime-vim'
 Plug 'elixir-lang/vim-elixir'
+Plug 'fsharp/vim-fsharp', {
+      \ 'for': 'fsharp',
+      \ 'do':  'make fsautocomplete',
+      \}
 Plug 'gioele/vim-autoswap'
 Plug 'godlygeek/tabular'
+Plug 'guns/vim-sexp'
 Plug 'haya14busa/incsearch-easymotion.vim'
 Plug 'haya14busa/incsearch.vim'
 Plug 'jelera/vim-javascript-syntax'
+Plug 'jpalardy/vim-slime'
+Plug 'kien/rainbow_parentheses.vim'
 Plug 'mattn/webapi-vim'
 Plug 'morhetz/gruvbox'
+Plug 'neovimhaskell/haskell-vim'
+Plug 'rizzatti/dash.vim'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
@@ -31,12 +42,17 @@ Plug 'sjl/gundo.vim'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-classpath'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-sexp-mappings-for-regular-people'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'valloric/YouCompleteMe'
+Plug 'venantius/vim-cljfmt'
+Plug 'venantius/vim-eastwood'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-scripts/l9'
@@ -86,6 +102,7 @@ let g:syntastic_auto_loc_list = 0
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_ruby_checkers = ['rubocop']
+let g:syntastic_haskell_checkers = ['hlint']
 " Vim-ruby settings
 :let g:ruby_indent_access_modifier_style = 'normal'
 :let ruby_fold = 1
@@ -145,6 +162,9 @@ noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
 map  n <Plug>(easymotion-next)
 map  N <Plug>(easymotion-prev)
 
+nmap <silent> <leader>ds <Plug>DashSearch
+
+
 function! g:Fixfont()
   set guifont=Courier\ 10\ Pitch\ 10
   set lines=44 columns=80
@@ -188,7 +208,26 @@ map #  <Plug>(incsearch-nohl-#)
 map g* <Plug>(incsearch-nohl-g*)
 map g# <Plug>(incsearch-nohl-g#)
 
+let g:rbpt_colorpairs = [
+    \ ['brown',       'RoyalBlue3'],
+    \ ['Darkblue',    'SeaGreen3'],
+    \ ['darkgray',    'DarkOrchid3'],
+    \ ['darkgreen',   'firebrick3'],
+    \ ['darkcyan',    'RoyalBlue3'],
+    \ ['darkred',     'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['brown',       'firebrick3'],
+    \ ['gray',        'RoyalBlue3'],
+    \ ['black',       'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['Darkblue',    'firebrick3'],
+    \ ['darkgreen',   'RoyalBlue3'],
+    \ ['darkcyan',    'SeaGreen3'],
+    \ ['darkred',     'DarkOrchid3'],
+    \ ['red',         'firebrick3'],
+    \ ]
 
+let g:rbpt_max = 16
 
 let g:slime_target = "tmux"
 let g:slime_paste_file = "$HOME/.slime_paste"
@@ -197,33 +236,6 @@ let g:ruby_debugger_progname = 'mvim'
 let g:formatprg_cpp = "astyle"
 let g:autoformat_verbosemode = 1
 let g:formatprg_args_expr_cpp = '"--unpad-paren --style=whitesmith --pad-paren-in --indent-brackets"'
-let g:rainbow_conf = {
-      \   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
-      \   'ctermfgs': [ 'lightblue', 'lightyellow', 'lightcyan', 'lightmagenta', 'lightred'],
-      \   'operators': '_,_',
-      \   'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
-      \   'separately': {
-      \       '*': {},
-      \       'rb' : {},
-      \       'tex': {
-      \           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
-      \       },
-      \       'lisp': {
-      \           'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
-      \       },
-      \       'brs': {
-      \           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
-      \       },
-      \       'vim': {
-      \           'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
-      \       },
-      \       'html': {
-      \           'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
-      \       },
-      \       'css': 0,
-      \   }
-      \}
-let g:rainbow_active = 1
 " Set <leader> to comma
 
 let mapleader=","
@@ -247,6 +259,8 @@ map <leader>c :CtrlPChange<cr>
 map <leader>q :CtrlPQuickfix<cr>
 map <leader>l :CtrlPLine<cr>
 map <leader>m :CtrlPMRU<cr>
+
+nnoremap <localleader>et :EnType<CR>
 
 " Normal Mode mappings
 noremap <leader>> :bn<CR>
@@ -303,11 +317,17 @@ if has("autocmd")
   " Also load indent files, to automatically do language-dependent indenting.
   autocmd filetype lisp,scheme,art setlocal equalprg=scmindent.rkt
   au BufRead,BufNewFile *.rex set filetype=ruby
+  au VimEnter * RainbowParenthesesToggle
+  au Syntax * RainbowParenthesesLoadRound
+  au Syntax * RainbowParenthesesLoadSquare
+  au Syntax * RainbowParenthesesLoadBraces
   filetype plugin indent on
   runtime macros/matchit.vim
   autocmd Syntax * syn match ExtraWhitespace /\s\+$\| \+\ze\t/
   autocmd BufWritePre *.brs,*.bs,*.rb,*.erb,*.js :call StripTrailingWhitespaces()
   autocmd BufWritePre *.brs,*.bs :retab
+  autocmd BufWritePost *.scala silent :EnTypeCheck
+
   autocmd FileType ruby nmap <buffer> <F5> <Plug>(xmpfilter-mark)
   autocmd FileType ruby xmap <buffer> <F5> <Plug>(xmpfilter-mark)
   autocmd FileType ruby imap <buffer> <F5> <Plug>(xmpfilter-mark)

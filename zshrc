@@ -110,3 +110,4 @@ export MANIFEST_CONFIG_URI=http://$NOWTV_CONFIG_SERVER_IP:4567/NowTV-NowTV-Roku/
 
 source ~/.bin/tmuxinator.zsh
 export PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/local/opt/sbt@0.13/bin:$PATH"
