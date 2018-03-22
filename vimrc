@@ -3,10 +3,10 @@
 set nocompatible
 
 call plug#begin('~/.vim/plugged')
-
 Plug 'Chiel92/vim-autoformat'
 Plug 'Chun-Yang/vim-action-ag'
 Plug 'DataWraith/auto_mkdir'
+Plug 'FrigoEU/psc-ide-vim'
 Plug 'MattesGroeger/vim-bookmarks'
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -17,23 +17,22 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'derekwyatt/vim-scala'
 Plug 'dermusikman/sonicpi.vim'
 Plug 'easymotion/vim-easymotion'
-Plug 'ensime/ensime-vim'
-Plug 'elixir-lang/vim-elixir'
-Plug 'fsharp/vim-fsharp', {
-      \ 'for': 'fsharp',
-      \ 'do':  'make fsautocomplete',
-      \}
 Plug 'gioele/vim-autoswap'
 Plug 'godlygeek/tabular'
-Plug 'guns/vim-sexp'
 Plug 'haya14busa/incsearch-easymotion.vim'
 Plug 'haya14busa/incsearch.vim'
 Plug 'jelera/vim-javascript-syntax'
 Plug 'jpalardy/vim-slime'
 Plug 'kien/rainbow_parentheses.vim'
+Plug 'leafgarland/typescript-vim'
+Plug 'lifepillar/vim-mucomplete'
+Plug 'maksimr/vim-jsbeautify'
 Plug 'mattn/webapi-vim'
-Plug 'morhetz/gruvbox'
+Plug 'mhartington/oceanic-next'
 Plug 'neovimhaskell/haskell-vim'
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'purescript-contrib/purescript-vim'
 Plug 'rizzatti/dash.vim'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree'
@@ -44,13 +43,12 @@ Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-classpath'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-fireplace'
+Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sexp-mappings-for-regular-people'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-Plug 'valloric/YouCompleteMe'
 Plug 'venantius/vim-cljfmt'
 Plug 'venantius/vim-eastwood'
 Plug 'vim-airline/vim-airline'
@@ -83,7 +81,7 @@ au CursorHold * checktime
 " set gfn=Menlo\ Regular\ for\ Powerline:h13
 set guifont=Meslo\ LG\ S\ for\ Powerline:h14
 set timeoutlen=1000 ttimeoutlen=0
-
+set clipboard+=unnamedplus
 
 " Syntastic
 set statusline+=%#warningmsg#
@@ -110,8 +108,9 @@ let g:syntastic_haskell_checkers = ['hlint']
 :let ruby_space_errors = 1
 :let ruby_spellcheck_strings = 1
 
-let g:airline#extensions#tabline#enabled = 0
-let g:airline_theme='molokai'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline_theme='bubblegum'
 
 let g:ctrlp_cmd = 'CtrlPBuffer'
 let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'dir', 'rtscript',
@@ -123,6 +122,34 @@ let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standar
 " Save whenever switching windows or leaving vim. This is useful when running
 " the tests inside vim without having to save all files first.
 au FocusLost,WinLeave * :silent! wa
+
+".vimrc
+map <c-f> :call JsBeautify()<cr>
+" or
+autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
+" for json
+autocmd FileType json noremap <buffer> <c-f> :call JsonBeautify()<cr>
+" for jsx
+autocmd FileType jsx noremap <buffer> <c-f> :call JsxBeautify()<cr>
+" for html
+autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
+" for css or scss
+autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
+
+" Mucomplete
+
+set completeopt+=menuone
+set completeopt+=noinsert
+set shortmess+=c   " Shut off completion messages
+set belloff+=ctrlg " If Vim beeps during completion
+inoremap <expr> <c-e> mucomplete#popup_exit("\<c-e>")
+inoremap <expr> <c-y> mucomplete#popup_exit("\<c-y>")
+inoremap <expr>  <cr> mucomplete#popup_exit("\<cr>")
+let g:mucomplete#enable_auto_at_startup = 1
+let g:mucomplete#chains = { 'default' : ['omni', 'ulti', 'keyn', 'tags'] }
+
+
+
 
 " Trigger autoread when changing buffers or coming back to vim.
 au FocusGained,BufEnter * :silent! !
@@ -164,7 +191,19 @@ map  N <Plug>(easymotion-prev)
 
 nmap <silent> <leader>ds <Plug>DashSearch
 
-
+if executable('brightscript-languageserver')
+    " pip install python-language-server
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'brightscript-languageserver',
+        \ 'cmd': {server_info->['brightscript-languageserver']},
+        \ 'whitelist': ['brs'],
+        \ })
+endif
+let g:lsp_signs_enabled = 1         " enable signs
+let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
+let g:lsp_signs_error = {'text': '✗'}
+let g:lsp_signs_warning = {'text': '‼', 'icon': '/path/to/some/icon'} " icons require GUI
+let g:lsp_signs_hint = {'icon': '/path/to/some/other/icon'} " icons require GUI
 function! g:Fixfont()
   set guifont=Courier\ 10\ Pitch\ 10
   set lines=44 columns=80
@@ -240,6 +279,12 @@ let g:formatprg_args_expr_cpp = '"--unpad-paren --style=whitesmith --pad-paren-i
 
 let mapleader=","
 
+let g:elm_setup_keybindings = 0
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+
+let g:elm_syntastic_show_warnings = 1
+
 " Mappings
 noremap <leader>gp :Git push origin master<cr>
 noremap <leader>qa :wqa!<cr>
@@ -297,11 +342,17 @@ endfunction
 
 map <silent> <Leader>tc :call Carousel()<cr>
 " colours
+if (has("termguicolors"))
+ set termguicolors
+endif
+
+" Theme
+syntax enable
+colorscheme OceanicNext
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
 if &t_Co > 2 || has("gui_running")
-  colorscheme gruvbox
   syntax on
   let os = substitute(system('uname'), "\n", "", "")
   if os == "Linux"
@@ -324,6 +375,7 @@ if has("autocmd")
   filetype plugin indent on
   runtime macros/matchit.vim
   autocmd Syntax * syn match ExtraWhitespace /\s\+$\| \+\ze\t/
+  autocmd BufWritePre *.elm :ElmFormat
   autocmd BufWritePre *.brs,*.bs,*.rb,*.erb,*.js :call StripTrailingWhitespaces()
   autocmd BufWritePre *.brs,*.bs :retab
   autocmd BufWritePost *.scala silent :EnTypeCheck

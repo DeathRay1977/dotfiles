@@ -87,27 +87,18 @@ export ARCHFLAGS="-arch x86_64"
 
 export NVM_DIR="/Users/Norm/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-export env_name=PROD_TEST
-export NOWTV_CONFIG_VERSION=4.2
-export country=GB
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-export ROKU_DEV_TARGET=192.168.0.29
+export ROKU_DEV_TARGET=192.168.0.34
 export ROKU_DEV_PASSWORD=abcd321
-export MANIFEST_TITLE="Now TV Sky IE"
-export MANIFEST_MAJOR_VERSION=0
-export MANIFEST_MINOR_VERSION=1
-export MANIFEST_BUILD_VERSION=00001
 export MANIFEST_HMAC_CLIENT=IE-NOWTV-ROKU-v1
 export MANIFEST_OOGWAY_CLIENT=client
 export MANIFEST_OOGWAY_SECRET=secret
 export PRODUCTION_BUILD=false
-export NOWTV_CONFIG_SERVER_IP=192.168.0.26
 # export MANIFEST_HMAC_SECRET=ZrwgsxNQft
-export PRODUCTION_BUILD=true
 export MANIFEST_HMAC_SECRET=Pv9HkaVzyGKAAM46q2K7JKN7bkW6aX7EYWpY6QB9UMvfuu
-export MANIFEST_CONFIG_URI=http://$NOWTV_CONFIG_SERVER_IP:4567/NowTV-NowTV-Roku/$NOWTV_CONFIG_VERSION/${country}-NowTV-NowTV-Roku-${env_name}/config.json
-
+export LOCAL_HTTP_SERVICE=192.168.0.26:4567
 source ~/.bin/tmuxinator.zsh
 export PATH="/usr/local/sbin:$PATH"
-export PATH="/usr/local/opt/sbt@0.13/bin:$PATH"
+export PATH="./node_modules/.bin":$PATH"
+export PATH=:$PATH"
