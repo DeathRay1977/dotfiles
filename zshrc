@@ -102,3 +102,4 @@ source ~/.bin/tmuxinator.zsh
 export PATH="/usr/local/sbin:$PATH"
 export PATH="./node_modules/.bin":$PATH"
 export PATH=:$PATH"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

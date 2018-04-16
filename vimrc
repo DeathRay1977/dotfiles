@@ -284,13 +284,14 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 
 let g:elm_syntastic_show_warnings = 1
-
+let NERDTreeQuitOnOpen = 1
 " Mappings
 noremap <leader>gp :Git push origin master<cr>
 noremap <leader>qa :wqa!<cr>
 noremap <leader>dp :call DebugPrint()<CR>
 noremap <leader>nh :noh<CR>
 nnoremap <Leader>nn :NERDTreeToggle<CR>
+nnoremap <Leader>nf :NERDTreeFind<CR>
 
 " Hard mode
 nnoremap <leader>h <Esc>:call ToggleHardMode()<CR>
@@ -369,6 +370,7 @@ if has("autocmd")
   autocmd filetype lisp,scheme,art setlocal equalprg=scmindent.rkt
   au BufRead,BufNewFile *.rex set filetype=ruby
   au VimEnter * RainbowParenthesesToggle
+  au VimLeave * :mksession! ~/session.vim
   au Syntax * RainbowParenthesesLoadRound
   au Syntax * RainbowParenthesesLoadSquare
   au Syntax * RainbowParenthesesLoadBraces
@@ -379,6 +381,8 @@ if has("autocmd")
   autocmd BufWritePre *.brs,*.bs,*.rb,*.erb,*.js :call StripTrailingWhitespaces()
   autocmd BufWritePre *.brs,*.bs :retab
   autocmd BufWritePost *.scala silent :EnTypeCheck
+  autocmd BufWinLeave *.brs mkview
+  autocmd BufWinEnter *.brs silent! loadview
 
   autocmd FileType ruby nmap <buffer> <F5> <Plug>(xmpfilter-mark)
   autocmd FileType ruby xmap <buffer> <F5> <Plug>(xmpfilter-mark)
