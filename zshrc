@@ -1,5 +1,5 @@
 # Path to your oh-my-zsh installation.
-export ZSH=/Users/Norm/.oh-my-zsh
+export ZSH=/Users/nfa02/.oh-my-zsh
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
@@ -59,7 +59,7 @@ export RUBYMOTION_ANDROID_NDK=/Users/Norm/.rubymotion-android/ndk
 # export MANPATH="/usr/local/man:$MANPATH"
 stty -ixon
 source $ZSH/oh-my-zsh.sh
-source ~/.oh-my-zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 # . `brew --prefix`/etc/profile.d/z.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -85,21 +85,26 @@ export ARCHFLAGS="-arch x86_64"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-export NVM_DIR="/Users/Norm/.nvm"
+export NVM_DIR="/Users/NFA02/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-export ROKU_DEV_TARGET=192.168.0.34
+export ROKU_DEV_TARGET=192.168.0.29
 export ROKU_DEV_PASSWORD=abcd321
-export MANIFEST_HMAC_CLIENT=IE-NOWTV-ROKU-v1
+export MANIFEST_TITLE="Now TV Sky IE"
+export MANIFEST_MAJOR_VERSION=0
+export MANIFEST_MINOR_VERSION=1
+export MINOR_VERSION=$MANIFEST_MINOR_VERSION
 export MANIFEST_OOGWAY_CLIENT=client
 export MANIFEST_OOGWAY_SECRET=secret
 export PRODUCTION_BUILD=false
-# export MANIFEST_HMAC_SECRET=ZrwgsxNQft
-export MANIFEST_HMAC_SECRET=Pv9HkaVzyGKAAM46q2K7JKN7bkW6aX7EYWpY6QB9UMvfuu
+export NOWTV_CONFIG_SERVER_IP=192.168.0.26
+export MANIFEST_HMAC_CLIENT=IE-NOWTV-ROKU-v1
+export MANIFEST_HMAC_SECRET_PROD=Pv9HkaVzyGKAAM46q2K7JKN7bkW6aX7EYWpY6QB9UMvfuu
+export MANIFEST_HMAC_SECRET_NON_PROD=ZrwgsxNQft
+export MANIFEST_HMAC_SECRET=$MANIFEST_HMAC_SECRET_PROD
+export MANIFEST_CONFIG_URI=http://$NOWTV_CONFIG_SERVER_IP:4567/NowTV-NowTV-Roku/$NOWTV_CONFIG_VERSION/${country}-NowTV-NowTV-Roku-${env_name}/config.json
 export LOCAL_HTTP_SERVICE=192.168.0.26:4567
-source ~/.bin/tmuxinator.zsh
 export PATH="/usr/local/sbin:$PATH"
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 export PATH="./node_modules/.bin":$PATH"
-export PATH=:$PATH"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

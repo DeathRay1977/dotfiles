@@ -14,43 +14,38 @@ Plug 'airblade/vim-gitgutter'
 Plug 'chooh/brightscript.vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'derekwyatt/vim-scala'
-Plug 'dermusikman/sonicpi.vim'
 Plug 'easymotion/vim-easymotion'
+Plug 'fsharp/vim-fsharp', {
 Plug 'gioele/vim-autoswap'
 Plug 'godlygeek/tabular'
 Plug 'haya14busa/incsearch-easymotion.vim'
 Plug 'haya14busa/incsearch.vim'
 Plug 'jelera/vim-javascript-syntax'
+Plug 'joshdick/vim-action-ack'
 Plug 'jpalardy/vim-slime'
-Plug 'kien/rainbow_parentheses.vim'
+Plug 'lifepillar/vim-mucomplete'
 Plug 'leafgarland/typescript-vim'
 Plug 'lifepillar/vim-mucomplete'
 Plug 'maksimr/vim-jsbeautify'
 Plug 'mattn/webapi-vim'
-Plug 'mhartington/oceanic-next'
-Plug 'neovimhaskell/haskell-vim'
+Plug 'morhetz/gruvbox'
+Plug 'mileszs/ack.vim'
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
 Plug 'purescript-contrib/purescript-vim'
-Plug 'rizzatti/dash.vim'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
 Plug 'sjl/gundo.vim'
-Plug 'terryma/vim-multiple-cursors'
 Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-abolish'
-Plug 'tpope/vim-classpath'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fireplace'
+Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-sexp-mappings-for-regular-people'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-Plug 'venantius/vim-cljfmt'
-Plug 'venantius/vim-eastwood'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-scripts/l9'
@@ -116,6 +111,17 @@ let g:ctrlp_cmd = 'CtrlPBuffer'
 let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'dir', 'rtscript',
                           \ 'undo', 'line', 'changes', 'mixed', 'bookmarkdir']
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+
+" MuComplete
+set completeopt+=menuone
+set completeopt+=noselect
+set shortmess+=c   " Shut off completion messages
+set belloff+=ctrlg " If Vim beeps during completion
+inoremap <expr> <c-e> mucomplete#popup_exit("\<c-e>")
+inoremap <expr> <c-y> mucomplete#popup_exit("\<c-y>")
+inoremap <expr>  <cr> mucomplete#popup_exit("\<cr>")
+let g:mucomplete#enable_auto_at_startup = 1
+let g:mucomplete#chains = { 'default' : ['tags', 'omni', 'ulti', 'keyn'] }
 
 " Nerdtree
 
@@ -320,28 +326,10 @@ nnoremap <down> <nop>
 nnoremap <left> <nop>
 nnoremap <right> <nop>
 
-nnoremap <leader>R :RainbowParenthesesToggle<CR>
 nnoremap <silent> <Plug>TransposeCharacters xp :call repeat#set("\<Plug>TransposeCharacters")<CR>
 nmap cp <Plug>TransposeCharacters
 
 nnoremap <leader>af :Autoformat<cr>
-" Since these all have native (Cmd-modified) versions in MacVim, don't bother
-" defining them there.
-function! Carousel()
-  for theme in split(globpath(&runtimepath, 'colors/*.vim'), '\n')
-    let t = fnamemodify(theme, ':t:r')
-    try
-      echo t
-      execute 'colorscheme '.t
-    catch
-    finally
-    endtry
-    sleep 4
-    redraw
-  endfor
-endfunction
-
-map <silent> <Leader>tc :call Carousel()<cr>
 " colours
 if (has("termguicolors"))
  set termguicolors
@@ -354,6 +342,7 @@ colorscheme OceanicNext
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
 if &t_Co > 2 || has("gui_running")
+  colorscheme gruvbox
   syntax on
   let os = substitute(system('uname'), "\n", "", "")
   if os == "Linux"
@@ -369,11 +358,7 @@ if has("autocmd")
   " Also load indent files, to automatically do language-dependent indenting.
   autocmd filetype lisp,scheme,art setlocal equalprg=scmindent.rkt
   au BufRead,BufNewFile *.rex set filetype=ruby
-  au VimEnter * RainbowParenthesesToggle
   au VimLeave * :mksession! ~/session.vim
-  au Syntax * RainbowParenthesesLoadRound
-  au Syntax * RainbowParenthesesLoadSquare
-  au Syntax * RainbowParenthesesLoadBraces
   filetype plugin indent on
   runtime macros/matchit.vim
   autocmd Syntax * syn match ExtraWhitespace /\s\+$\| \+\ze\t/
