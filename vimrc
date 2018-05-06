@@ -6,43 +6,39 @@ call plug#begin('~/.vim/plugged')
 Plug 'Chiel92/vim-autoformat'
 Plug 'Chun-Yang/vim-action-ag'
 Plug 'DataWraith/auto_mkdir'
-Plug 'FrigoEU/psc-ide-vim'
-Plug 'MattesGroeger/vim-bookmarks'
-Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+Plug 'SirVer/ultisnips'
+Plug 'Valloric/YouCompleteMe'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'airblade/vim-gitgutter'
 Plug 'chooh/brightscript.vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'easymotion/vim-easymotion'
-Plug 'fsharp/vim-fsharp', {
 Plug 'gioele/vim-autoswap'
 Plug 'godlygeek/tabular'
 Plug 'haya14busa/incsearch-easymotion.vim'
 Plug 'haya14busa/incsearch.vim'
-Plug 'jelera/vim-javascript-syntax'
 Plug 'joshdick/vim-action-ack'
 Plug 'jpalardy/vim-slime'
-Plug 'lifepillar/vim-mucomplete'
+Plug 'kien/rainbow_parentheses.vim'
 Plug 'leafgarland/typescript-vim'
-Plug 'lifepillar/vim-mucomplete'
-Plug 'maksimr/vim-jsbeautify'
+Plug 'mattn/ctrlp-mark'
 Plug 'mattn/webapi-vim'
-Plug 'morhetz/gruvbox'
 Plug 'mileszs/ack.vim'
-Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'purescript-contrib/purescript-vim'
+Plug 'morhetz/gruvbox'
+Plug 'mxw/vim-jsx'
+Plug 'pangloss/vim-javascript'
 Plug 'rking/ag.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
 Plug 'sjl/gundo.vim'
+Plug 'terryma/vim-multiple-cursors'
 Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fireplace'
-Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
@@ -63,20 +59,30 @@ set incsearch  " do incremental searching
 set nohlsearch
 set hidden
 set laststatus=2
-set ts=4
-set sts=4
-set sw=4
+" by default, the indent is 2 spaces. 
+set shiftwidth=2
+set softtabstop=2
+set tabstop=2
 set expandtab
+
+" for html/rb files, 2 spaces
+autocmd Filetype html setlocal ts=2 sw=2 expandtab
+autocmd Filetype ruby setlocal ts=2 sw=2 expandtab
+
+" for js/coffee/jade files, 4 spaces
+autocmd Filetype brs setlocal ts=4 sw=4 sts=0 expandtab
+autocmd Filetype coffeescript setlocal ts=4 sw=4 sts=0 expandtab
+autocmd Filetype jade setlocal ts=4 sw=4 sts=0 expandtab
 set mouse=a
 set nowrap
 set autoread
 set fileformat=unix
 set list
+set listchars=tab:>·,trail:-
 au CursorHold * checktime
 " set gfn=Menlo\ Regular\ for\ Powerline:h13
 set guifont=Meslo\ LG\ S\ for\ Powerline:h14
 set timeoutlen=1000 ttimeoutlen=0
-set clipboard+=unnamedplus
 
 " Syntastic
 set statusline+=%#warningmsg#
@@ -96,6 +102,7 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_ruby_checkers = ['rubocop']
 let g:syntastic_haskell_checkers = ['hlint']
+let g:syntastic_javascript_checkers = ['eslint']
 " Vim-ruby settings
 :let g:ruby_indent_access_modifier_style = 'normal'
 :let ruby_fold = 1
@@ -103,7 +110,7 @@ let g:syntastic_haskell_checkers = ['hlint']
 :let ruby_space_errors = 1
 :let ruby_spellcheck_strings = 1
 
-let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#enabled = 0
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline_theme='bubblegum'
 
@@ -111,50 +118,11 @@ let g:ctrlp_cmd = 'CtrlPBuffer'
 let g:ctrlp_extensions = ['tag', 'buffertag', 'quickfix', 'dir', 'rtscript',
                           \ 'undo', 'line', 'changes', 'mixed', 'bookmarkdir']
 let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
-
-" MuComplete
-set completeopt+=menuone
-set completeopt+=noselect
-set shortmess+=c   " Shut off completion messages
-set belloff+=ctrlg " If Vim beeps during completion
-inoremap <expr> <c-e> mucomplete#popup_exit("\<c-e>")
-inoremap <expr> <c-y> mucomplete#popup_exit("\<c-y>")
-inoremap <expr>  <cr> mucomplete#popup_exit("\<cr>")
-let g:mucomplete#enable_auto_at_startup = 1
-let g:mucomplete#chains = { 'default' : ['tags', 'omni', 'ulti', 'keyn'] }
-
 " Nerdtree
 
 " Save whenever switching windows or leaving vim. This is useful when running
 " the tests inside vim without having to save all files first.
 au FocusLost,WinLeave * :silent! wa
-
-".vimrc
-map <c-f> :call JsBeautify()<cr>
-" or
-autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
-" for json
-autocmd FileType json noremap <buffer> <c-f> :call JsonBeautify()<cr>
-" for jsx
-autocmd FileType jsx noremap <buffer> <c-f> :call JsxBeautify()<cr>
-" for html
-autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
-" for css or scss
-autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
-
-" Mucomplete
-
-set completeopt+=menuone
-set completeopt+=noinsert
-set shortmess+=c   " Shut off completion messages
-set belloff+=ctrlg " If Vim beeps during completion
-inoremap <expr> <c-e> mucomplete#popup_exit("\<c-e>")
-inoremap <expr> <c-y> mucomplete#popup_exit("\<c-y>")
-inoremap <expr>  <cr> mucomplete#popup_exit("\<cr>")
-let g:mucomplete#enable_auto_at_startup = 1
-let g:mucomplete#chains = { 'default' : ['omni', 'ulti', 'keyn', 'tags'] }
-
-
 
 
 " Trigger autoread when changing buffers or coming back to vim.
@@ -163,9 +131,9 @@ au FocusGained,BufEnter * :silent! !
 " Auto Ctags
 let g:auto_ctags = 1
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-let g:UltiSnipsExpandTrigger="<c-k>"
-let g:UltiSnipsJumpForwardTrigger="<c-k>"
-let g:UltiSnipsJumpBackwardTrigger="<c-j>"
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
 let g:UltiSnipsSnippetsDir="~/.vim/bundle/vim-snippets/UltiSnips"
@@ -194,8 +162,6 @@ noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
 " different highlight method and have some other features )
 map  n <Plug>(easymotion-next)
 map  N <Plug>(easymotion-prev)
-
-nmap <silent> <leader>ds <Plug>DashSearch
 
 if executable('brightscript-languageserver')
     " pip install python-language-server
@@ -274,6 +240,11 @@ let g:rbpt_colorpairs = [
 
 let g:rbpt_max = 16
 
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+let g:ycm_use_ultisnips_completer = 0
 let g:slime_target = "tmux"
 let g:slime_paste_file = "$HOME/.slime_paste"
 
@@ -311,6 +282,7 @@ map <leader>c :CtrlPChange<cr>
 map <leader>q :CtrlPQuickfix<cr>
 map <leader>l :CtrlPLine<cr>
 map <leader>m :CtrlPMRU<cr>
+map <leader>M :CtrlPMark<cr>
 
 nnoremap <localleader>et :EnType<CR>
 
@@ -330,14 +302,6 @@ nnoremap <silent> <Plug>TransposeCharacters xp :call repeat#set("\<Plug>Transpos
 nmap cp <Plug>TransposeCharacters
 
 nnoremap <leader>af :Autoformat<cr>
-" colours
-if (has("termguicolors"))
- set termguicolors
-endif
-
-" Theme
-syntax enable
-colorscheme OceanicNext
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
@@ -358,7 +322,7 @@ if has("autocmd")
   " Also load indent files, to automatically do language-dependent indenting.
   autocmd filetype lisp,scheme,art setlocal equalprg=scmindent.rkt
   au BufRead,BufNewFile *.rex set filetype=ruby
-  au VimLeave * :mksession! ~/session.vim
+  au VimLeave * :mksession! ./session.vim
   filetype plugin indent on
   runtime macros/matchit.vim
   autocmd Syntax * syn match ExtraWhitespace /\s\+$\| \+\ze\t/
@@ -368,7 +332,6 @@ if has("autocmd")
   autocmd BufWritePost *.scala silent :EnTypeCheck
   autocmd BufWinLeave *.brs mkview
   autocmd BufWinEnter *.brs silent! loadview
-
   autocmd FileType ruby nmap <buffer> <F5> <Plug>(xmpfilter-mark)
   autocmd FileType ruby xmap <buffer> <F5> <Plug>(xmpfilter-mark)
   autocmd FileType ruby imap <buffer> <F5> <Plug>(xmpfilter-mark)
@@ -377,6 +340,9 @@ if has("autocmd")
   autocmd FileType ruby xmap <buffer> <F6> <Plug>(xmpfilter-run)
   autocmd FileType ruby imap <buffer> <F6> <Plug>(xmpfilter-run)
   autocmd FileType brs setlocal commentstring='\ %s
+  autocmd FileType javascript setl sw=2 sts=2 et
+  autocmd FileType javascript.jsx setl sw=2 sts=2 et
+  autocmd FileType jsx setl sw=2 sts=2 et
   autocmd! bufwritepost .vimrc source $MYVIMRC
   au BufRead,BufNewFile *.bs setfiletype brs
   autocmd VimResized * :wincmd =
@@ -400,3 +366,26 @@ highlight Pmenu guibg=brown gui=bold
 function! DebugPrint()
     normal yt oprint "pa: ";p
 endfunction
+
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
+
+highlight UnwantedTabs ctermbg=darkgreen guibg=lightgreen
+match UnwantedTabs /\t/
+autocmd BufWinEnter * match UnwantedTabs /\t/
+autocmd InsertEnter * match UnwantedTabs /\t\+\%#\@<!$/
+autocmd InsertLeave * match UnwantedTabs /\t/
+autocmd BufWinLeave * call clearmatches()
+
+" Use a blinking upright bar cursor in Insert mode, a blinking block in normal
+if &term == 'xterm-256color' || &term == 'screen-256color'
+    let &t_SI = "\<Esc>[5 q"
+    let &t_EI = "\<Esc>[1 q"
+endif
+
+
+
