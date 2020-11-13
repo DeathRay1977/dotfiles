@@ -10,3 +10,5 @@ export CC=/usr/local/bin/clang-3.6
 PATH=$PATH:/Applications/Racket\ v6.2/bin
 export CSCOPE_DB=/Users/Norm/cscope.out
 stty -ixon
+
+[ -s "/Users/Norm/.jabba/jabba.sh" ] && source "/Users/Norm/.jabba/jabba.sh"

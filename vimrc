@@ -2,25 +2,25 @@
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/.config/nvim/plugged')
 Plug 'Chiel92/vim-autoformat'
 Plug 'Chun-Yang/vim-action-ag'
 Plug 'DataWraith/auto_mkdir'
 Plug 'SirVer/ultisnips'
-Plug 'Valloric/YouCompleteMe'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'airblade/vim-gitgutter'
 Plug 'chooh/brightscript.vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'easymotion/vim-easymotion'
+Plug 'fatih/vim-go'
 Plug 'gioele/vim-autoswap'
 Plug 'godlygeek/tabular'
 Plug 'haya14busa/incsearch-easymotion.vim'
 Plug 'haya14busa/incsearch.vim'
 Plug 'joshdick/vim-action-ack'
 Plug 'jpalardy/vim-slime'
-Plug 'kien/rainbow_parentheses.vim'
+Plug 'luochen1990/rainbow'
 Plug 'leafgarland/typescript-vim'
 Plug 'mattn/ctrlp-mark'
 Plug 'mattn/webapi-vim'
@@ -28,14 +28,17 @@ Plug 'mileszs/ack.vim'
 Plug 'morhetz/gruvbox'
 Plug 'mxw/vim-jsx'
 Plug 'pangloss/vim-javascript'
+Plug 'rizzatti/dash.vim'
 Plug 'rking/ag.vim'
+Plug 'huffman/vim-elixir'
 Plug 'scrooloose/nerdtree'
-Plug 'scrooloose/syntastic'
 Plug 'sjl/gundo.vim'
+Plug 'sbdchd/neoformat'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'tommcdo/vim-exchange'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-cucumber'
 Plug 'tpope/vim-fireplace'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-obsession'
@@ -45,6 +48,13 @@ Plug 'tpope/vim-unimpaired'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-scripts/l9'
+Plug 'w0rp/ale'
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+Plug 'junegunn/fzf'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 call plug#end()
 set encoding=utf8
 set rnu
@@ -59,15 +69,20 @@ set incsearch  " do incremental searching
 set nohlsearch
 set hidden
 set laststatus=2
-" by default, the indent is 2 spaces. 
+" by default, the indent is 2 spaces.
 set shiftwidth=2
 set softtabstop=2
 set tabstop=2
 set expandtab
 
+let g:deoplete#enable_at_startup = 1
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+
 " for html/rb files, 2 spaces
 autocmd Filetype html setlocal ts=2 sw=2 expandtab
 autocmd Filetype ruby setlocal ts=2 sw=2 expandtab
+autocmd Filetype vim setlocal ts=2 sw=2 expandtab
+autocmd Filetype go setlocal ts=8 sw=8
 
 " for js/coffee/jade files, 4 spaces
 autocmd Filetype brs setlocal ts=4 sw=4 sts=0 expandtab
@@ -81,28 +96,44 @@ set list
 set listchars=tab:>·,trail:-
 au CursorHold * checktime
 " set gfn=Menlo\ Regular\ for\ Powerline:h13
-set guifont=Meslo\ LG\ S\ for\ Powerline:h14
 set timeoutlen=1000 ttimeoutlen=0
 
 " Syntastic
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
 
-set directory=~/.vim/swapfiles//
-set backupdir=~/.vim/backup//
-set undodir=~/.vim/undo//
+set directory=~/.config/nvim/swapfiles//
+set backupdir=~/.config/nvim/backup//
+set undodir=~/.config/nvim/undo//
+
+let g:ale_elixir_elixir_ls_release = '/Users/Norm/elixir-language-server/'
+
+let g:LanguageClient_serverCommands = {
+    \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
+    \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
+    \ 'go': ['tcp://127.0.0.1:4389'],
+    \ 'cpp': ['/Users/Norm/cquery/build/release/bin/cquery', 
+    \ '--log-file=/tmp/cq.log', 
+    \ '--init={"cacheDirectory":"/var/cquery/"}'],                                                                                                                                                                              
+    \ }
+
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+" Or map each action separately
+nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 
 let g:python_host_prog = '/usr/local/bin/python2'
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_enable_signs = 0
-let g:syntastic_auto_loc_list = 0
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_ruby_checkers = ['rubocop']
-let g:syntastic_haskell_checkers = ['hlint']
-let g:syntastic_javascript_checkers = ['eslint']
+" let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_enable_signs = 0
+" let g:syntastic_auto_loc_list = 0
+" let g:syntastic_check_on_open = 1
+" let g:syntastic_check_on_wq = 0
+" let g:syntastic_ruby_checkers = ['rubocop']
+" let g:syntastic_haskell_checkers = ['hlint']
+" let g:syntastic_javascript_checkers = ['eslint']
 " Vim-ruby settings
 :let g:ruby_indent_access_modifier_style = 'normal'
 :let ruby_fold = 1
@@ -110,7 +141,7 @@ let g:syntastic_javascript_checkers = ['eslint']
 :let ruby_space_errors = 1
 :let ruby_spellcheck_strings = 1
 
-let g:airline#extensions#tabline#enabled = 0
+let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
 let g:airline_theme='bubblegum'
 
@@ -206,6 +237,12 @@ function! s:incsearch_config(...) abort
   \ }), get(a:, 1, {}))
 endfunction
 
+if has('nvim')
+  tnoremap <Esc> <C-\><C-n>
+  tnoremap <M-[> <Esc>
+  tnoremap <C-v><Esc> <Esc>
+endif
+
 noremap <silent><expr> /  incsearch#go(<SID>incsearch_config())
 noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
 noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
@@ -219,31 +256,6 @@ map #  <Plug>(incsearch-nohl-#)
 map g* <Plug>(incsearch-nohl-g*)
 map g# <Plug>(incsearch-nohl-g#)
 
-let g:rbpt_colorpairs = [
-    \ ['brown',       'RoyalBlue3'],
-    \ ['Darkblue',    'SeaGreen3'],
-    \ ['darkgray',    'DarkOrchid3'],
-    \ ['darkgreen',   'firebrick3'],
-    \ ['darkcyan',    'RoyalBlue3'],
-    \ ['darkred',     'SeaGreen3'],
-    \ ['darkmagenta', 'DarkOrchid3'],
-    \ ['brown',       'firebrick3'],
-    \ ['gray',        'RoyalBlue3'],
-    \ ['black',       'SeaGreen3'],
-    \ ['darkmagenta', 'DarkOrchid3'],
-    \ ['Darkblue',    'firebrick3'],
-    \ ['darkgreen',   'RoyalBlue3'],
-    \ ['darkcyan',    'SeaGreen3'],
-    \ ['darkred',     'DarkOrchid3'],
-    \ ['red',         'firebrick3'],
-    \ ]
-
-let g:rbpt_max = 16
-
-au VimEnter * RainbowParenthesesToggle
-au Syntax * RainbowParenthesesLoadRound
-au Syntax * RainbowParenthesesLoadSquare
-au Syntax * RainbowParenthesesLoadBraces
 let g:ycm_use_ultisnips_completer = 0
 let g:slime_target = "tmux"
 let g:slime_paste_file = "$HOME/.slime_paste"
@@ -343,7 +355,7 @@ if has("autocmd")
   autocmd FileType javascript setl sw=2 sts=2 et
   autocmd FileType javascript.jsx setl sw=2 sts=2 et
   autocmd FileType jsx setl sw=2 sts=2 et
-  autocmd! bufwritepost .vimrc source $MYVIMRC
+  autocmd! bufwritepost init.vim source $MYVIMRC
   au BufRead,BufNewFile *.bs setfiletype brs
   autocmd VimResized * :wincmd =
   " When editing a file, always jump to the last known cursor position.
@@ -367,25 +379,48 @@ function! DebugPrint()
     normal yt oprint "pa: ";p
 endfunction
 
-highlight ExtraWhitespace ctermbg=red guibg=red
-match ExtraWhitespace /\s\+$/
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-autocmd BufWinLeave * call clearmatches()
+" highlight ExtraWhitespace ctermbg=red guibg=red
+" match ExtraWhitespace /\s\+$/
+" autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+" autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+" autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+" autocmd BufWinLeave * call clearmatches()
 
-highlight UnwantedTabs ctermbg=darkgreen guibg=lightgreen
-match UnwantedTabs /\t/
-autocmd BufWinEnter * match UnwantedTabs /\t/
-autocmd InsertEnter * match UnwantedTabs /\t\+\%#\@<!$/
-autocmd InsertLeave * match UnwantedTabs /\t/
-autocmd BufWinLeave * call clearmatches()
+" highlight UnwantedTabs ctermbg=darkgreen guibg=lightgreen
+" match UnwantedTabs /\t/
+" autocmd BufWinEnter * match UnwantedTabs /\t/
+" autocmd InsertEnter * match UnwantedTabs /\t\+\%#\@<!$/
+" autocmd InsertLeave * match UnwantedTabs /\t/
+" autocmd BufWinLeave * call clearmatches()
 
 " Use a blinking upright bar cursor in Insert mode, a blinking block in normal
 if &term == 'xterm-256color' || &term == 'screen-256color'
     let &t_SI = "\<Esc>[5 q"
     let &t_EI = "\<Esc>[1 q"
-endif
+  endif
 
+let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
 
+let g:rainbow_conf = {
+  \ 'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+  \ 'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+  \ 'operators': '_,_',
+  \ 'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+  \ 'separately': {
+  \   '*': {},
+  \   'tex': {
+  \     'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+  \   },
+  \   'lisp': {
+  \     'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+  \   },
+  \   'vim': {
+  \     'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+  \   },
+  \   'html': {
+  \     'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+  \   },
+  \   'css': 0,
+  \ }
+  \}
 
